@@ -2,7 +2,7 @@
 
 @Library('plivo_standard_libs@production') _
 
-operatorDeliveryPipeline ([
+deliveryPipeline ([
     disableUnitTests: true,
     disableLint: true,
     disableSonar: true,
