@@ -1,6 +1,7 @@
 ---
 parent: devops
 serviceName: opensearch-k8s-operator
+dockerOnly: true
 unitTests:
   command: cd opensearch-operator && make test
   platform: "linux/amd64,linux/arm64"
