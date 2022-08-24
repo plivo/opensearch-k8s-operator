@@ -5,5 +5,6 @@
 operatorDeliveryPipeline ([
     disableUnitTests: true,
     disableLint: true,
-    disableSonar: true
+    disableSonar: true,
+    build: true
 ])
