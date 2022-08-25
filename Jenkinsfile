@@ -23,7 +23,6 @@ pipeline {
 			steps {
 				deleteDir()
                 cleanTmp()
-                sh 'rm -rfv * ||:'
                 script {
                     reportDurationToCloudWatch {
                         scmExtensions = [
