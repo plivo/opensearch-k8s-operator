@@ -49,8 +49,6 @@ pipeline {
                         String version = new java.text.SimpleDateFormat("yy.MM.dd.${currentBuild.id}").format(new Date())
                         buildContext.version = version
 
-                        debugCmd('ls -la *')
-
                         assert buildContext.configFile
 
                         debugLog('buildContext.configFile: ' + buildContext.configFile)
@@ -61,12 +59,6 @@ pipeline {
 
                         buildContainer = "plivo/jenkins-ci/debian:jessie"
                         assert buildContainer != null
-
-                        cleanTmp()
-
-                        debugCmd('ls -l ||:')
-                        debugCmd('ls -l ' + checkoutDir + '/ ||:')
-                        debugCmd('ls -l ' + checkoutDir + '/*/ ||:')
                     }
                 }
 			}
