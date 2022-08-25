@@ -63,30 +63,30 @@ pipeline {
 			}
 		}
 
-        stage('Build/Publish') {
-            agent { 
-                docker {
-                    image buildContainer
-                    reuseNode true
-                }
-            }
+        // stage('Build/Publish') {
+        //     agent { 
+        //         docker {
+        //             image buildContainer
+        //             reuseNode true
+        //         }
+        //     }
 
-            steps {
-                script {
-                    reportDurationToCloudWatch {
-                        build([
-                            buildContext: buildContext
-                        ])
-                    }
-                }
-            }
+        //     steps {
+        //         script {
+        //             reportDurationToCloudWatch {
+        //                 build([
+        //                     buildContext: buildContext
+        //                 ])
+        //             }
+        //         }
+        //     }
 
-            post {
-                failure {
-                    script { failedStage = env.STAGE_NAME }
-                }
-            }
-        }
+        //     post {
+        //         failure {
+        //             script { failedStage = env.STAGE_NAME }
+        //         }
+        //     }
+        // }
 
         stage('Build/Publish Docker Image') {
             steps {
