@@ -21,8 +21,6 @@ pipeline {
 	stages {
 		stage('Checkout') {
 			steps {
-				deleteDir()
-                cleanTmp()
                 script {
                     reportDurationToCloudWatch {
                         scmExtensions = [
