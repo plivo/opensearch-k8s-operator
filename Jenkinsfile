@@ -34,7 +34,6 @@ pipeline {
                             ]
                         ]
 
-                        debugLog(scm.dump())
                         checkout([
                             $class: 'GitSCM',
                             branches: scm.branches,
