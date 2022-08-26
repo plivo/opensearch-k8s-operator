@@ -34,6 +34,18 @@ pipeline {
                             ]
                         ]
 
+                        try {
+                            globalDeployConfig = libraryResource 'globalDeployConfig.yml'
+                            echo '** Reading globalDeployConfig.yml.'
+                            globalDeployConfig = readYaml text: globalDeployConfig
+                        } catch (Exception ex) {
+                            println ex
+                            globalDeployConfig = libraryResource 'globalDeployConfig.json'
+                            globalDeployConfig = readJSON text: globalDeployConfig
+                        }
+
+                        buildContext << globalDeployConfig
+
                         checkout([
                             $class: 'GitSCM',
                             branches: scm.branches,
@@ -62,31 +74,6 @@ pipeline {
                 }
 			}
 		}
-
-        // stage('Build/Publish') {
-        //     agent { 
-        //         docker {
-        //             image buildContainer
-        //             reuseNode true
-        //         }
-        //     }
-
-        //     steps {
-        //         script {
-        //             reportDurationToCloudWatch {
-        //                 build([
-        //                     buildContext: buildContext
-        //                 ])
-        //             }
-        //         }
-        //     }
-
-        //     post {
-        //         failure {
-        //             script { failedStage = env.STAGE_NAME }
-        //         }
-        //     }
-        // }
 
         stage('Build/Publish Docker Image') {
             steps {
