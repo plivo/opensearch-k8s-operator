@@ -190,6 +190,11 @@ func NewSTSForNodePool(
 	}
 
 	image := helpers.ResolveImage(cr, &node)
+	nodeProbes := helpers.ResolveProbes(node.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &readinessProbe,
+	})
 
 	var mainCommand []string
 	com := "./bin/opensearch-plugin install --batch"
@@ -301,9 +306,9 @@ func NewSTSForNodePool(
 									ContainerPort: 9300,
 								},
 							},
-							StartupProbe:   &probe,
-							LivenessProbe:  &probe,
-							ReadinessProbe: &readinessProbe,
+							StartupProbe:   nodeProbes.StartupProbe,
+							LivenessProbe:  nodeProbes.LivenessProbe,
+							ReadinessProbe: nodeProbes.ReadinessProbe,
 							VolumeMounts:   volumeMounts,
 						},
 					},
@@ -566,6 +571,11 @@ func NewBootstrapPod(
 		InitialDelaySeconds: 10,
 		ProbeHandler:        corev1.ProbeHandler{TCPSocket: &corev1.TCPSocketAction{Port: intstr.IntOrString{IntVal: cr.Spec.General.HttpPort}}},
 	}
+	boostrapProbes := helpers.ResolveProbes(cr.Spec.Bootstrap.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &corev1.Probe{},
+	})
 
 	volumes = append(volumes, corev1.Volume{
 		Name: "data",
@@ -638,8 +648,8 @@ func NewBootstrapPod(
 							ContainerPort: 9300,
 						},
 					},
-					StartupProbe:  &probe,
-					LivenessProbe: &probe,
+					StartupProbe:  boostrapProbes.StartupProbe,
+					LivenessProbe: boostrapProbes.LivenessProbe,
 					VolumeMounts:  volumeMounts,
 				},
 			},
