@@ -85,6 +85,11 @@ func NewDashboardsDeploymentForCR(cr *opsterv1.OpenSearchCluster, volumes []core
 
 		ProbeHandler: corev1.ProbeHandler{HTTPGet: &corev1.HTTPGetAction{Path: "/api/reporting/stats", Port: intstr.IntOrString{IntVal: port}, Scheme: probeScheme}},
 	}
+	dashboardProbes := helpers.ResolveProbes(cr.Spec.Dashboards.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &corev1.Probe{},
+	})
 
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -119,8 +124,8 @@ func NewDashboardsDeploymentForCR(cr *opsterv1.OpenSearchCluster, volumes []core
 									ContainerPort: port,
 								},
 							},
-							StartupProbe:  &probe,
-							LivenessProbe: &probe,
+							StartupProbe:  dashboardProbes.StartupProbe,
+							LivenessProbe: dashboardProbes.LivenessProbe,
 							Env:           env,
 							VolumeMounts:  volumeMounts,
 						},

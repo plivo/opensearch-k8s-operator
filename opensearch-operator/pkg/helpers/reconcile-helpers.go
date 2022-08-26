@@ -5,6 +5,7 @@ import (
 	"path"
 
 	"github.com/hashicorp/go-version"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
 	opsterv1 "opensearch.opster.io/api/v1"
 )
@@ -118,4 +119,21 @@ func VersionCheck(instance *opsterv1.OpenSearchCluster) (int32, string) {
 		securityconfigPath = "/usr/share/opensearch/plugins/opensearch-security/securityconfig"
 	}
 	return httpPort, securityconfigPath
+}
+
+func ResolveProbes(probes, defaultProbes *opsterv1.ProbeSpec) (result opsterv1.ProbeSpec) {
+	if probes != nil {
+		result.LivenessProbe = checkOrAssignDefaultProbe(probes.LivenessProbe, defaultProbes.LivenessProbe)
+		result.StartupProbe = checkOrAssignDefaultProbe(probes.StartupProbe, defaultProbes.StartupProbe)
+		result.ReadinessProbe = checkOrAssignDefaultProbe(probes.ReadinessProbe, defaultProbes.ReadinessProbe)
+		return
+	}
+	return *defaultProbes
+}
+
+func checkOrAssignDefaultProbe(probe, defaultProbe *corev1.Probe) *corev1.Probe {
+	if probe != nil {
+		return probe
+	}
+	return defaultProbe
 }
