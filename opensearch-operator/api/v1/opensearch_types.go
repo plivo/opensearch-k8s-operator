@@ -63,6 +63,7 @@ type NodePool struct {
 	AdditionalConfig map[string]string           `json:"additionalConfig,omitempty"`
 	Labels           map[string]string           `json:"labels,omitempty"`
 	Env              []corev1.EnvVar             `json:"env,omitempty"`
+	*ProbeSpec       `json:",inline,omitempty"`
 }
 
 // PersistencConfig defines options for data persistence
@@ -95,6 +96,13 @@ type BootstrapConfig struct {
 	NodeSelector map[string]string           `json:"nodeSelector,omitempty"`
 	Affinity     *corev1.Affinity            `json:"affinity,omitempty"`
 	Jvm          string                      `json:"jvm,omitempty"`
+	*ProbeSpec   `json:",inline,omitempty"`
+}
+
+type ProbeSpec struct {
+	LivenessProbe  *corev1.Probe `json:"livenessProbe,omitempty"`
+	StartupProbe   *corev1.Probe `json:"startUpProbe,omitempty"`
+	ReadinessProbe *corev1.Probe `json:"readinessProbe,omitempty"`
 }
 
 type DashboardsConfig struct {
@@ -113,6 +121,7 @@ type DashboardsConfig struct {
 	Tolerations                 []corev1.Toleration         `json:"tolerations,omitempty"`
 	NodeSelector                map[string]string           `json:"nodeSelector,omitempty"`
 	Affinity                    *corev1.Affinity            `json:"affinity,omitempty"`
+	*ProbeSpec                  `json:",inline,omitempty"`
 }
 
 type DashboardsTlsConfig struct {
