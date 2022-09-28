@@ -137,3 +137,25 @@ func checkOrAssignDefaultProbe(probe, defaultProbe *corev1.Probe) *corev1.Probe 
 	}
 	return defaultProbe
 }
+
+func ResolveInitContainersImage(cr *opsterv1.OpenSearchCluster) (result opsterv1.ImageSpec) {
+	defaultRepo := "public.ecr.aws/opsterio"
+	defaultImage := "busybox"
+	defaultTag := "1.27.2-buildx"
+
+	if cr.Spec.General.InitContainerSpec != nil {
+		if useCustomImage(cr.Spec.General.InitContainerSpec, &result) {
+			return
+		}
+	}
+
+	// If a different image repo is requested, use that with the default image
+	// name and version tag.
+	if cr.Spec.General.DefaultRepo != nil {
+		defaultRepo = *cr.Spec.General.DefaultRepo
+	}
+
+	result.Image = pointer.String(fmt.Sprintf("%s:%s",
+		path.Join(defaultRepo, defaultImage), defaultTag))
+	return
+}
