@@ -47,23 +47,25 @@ type GeneralConfig struct {
 	PluginsList    []string `json:"pluginsList,omitempty"`
 	// Additional volumes to mount to all pods in the cluster
 	AdditionalVolumes []AdditionalVolume `json:"additionalVolumes,omitempty"`
+	InitContainerSpec *ImageSpec         `json:"initContainerSpec,omitempty"`
 }
 
 type NodePool struct {
-	Component        string                      `json:"component"`
-	Replicas         int32                       `json:"replicas"`
-	DiskSize         string                      `json:"diskSize,omitempty"`
-	Resources        corev1.ResourceRequirements `json:"resources,omitempty"`
-	Jvm              string                      `json:"jvm,omitempty"`
-	Roles            []string                    `json:"roles"`
-	Tolerations      []corev1.Toleration         `json:"tolerations,omitempty"`
-	NodeSelector     map[string]string           `json:"nodeSelector,omitempty"`
-	Affinity         *corev1.Affinity            `json:"affinity,omitempty"`
-	Persistence      *PersistenceConfig          `json:"persistence,omitempty"`
-	AdditionalConfig map[string]string           `json:"additionalConfig,omitempty"`
-	Labels           map[string]string           `json:"labels,omitempty"`
-	Env              []corev1.EnvVar             `json:"env,omitempty"`
-	*ProbeSpec       `json:",inline,omitempty"`
+	Component                 string                            `json:"component"`
+	Replicas                  int32                             `json:"replicas"`
+	DiskSize                  string                            `json:"diskSize,omitempty"`
+	Resources                 corev1.ResourceRequirements       `json:"resources,omitempty"`
+	Jvm                       string                            `json:"jvm,omitempty"`
+	Roles                     []string                          `json:"roles"`
+	Tolerations               []corev1.Toleration               `json:"tolerations,omitempty"`
+	NodeSelector              map[string]string                 `json:"nodeSelector,omitempty"`
+	Affinity                  *corev1.Affinity                  `json:"affinity,omitempty"`
+	TopologySpreadConstraints []corev1.TopologySpreadConstraint `json:"topologySpreadConstraints,omitempty"`
+	Persistence               *PersistenceConfig                `json:"persistence,omitempty"`
+	AdditionalConfig          map[string]string                 `json:"additionalConfig,omitempty"`
+	Labels                    map[string]string                 `json:"labels,omitempty"`
+	Env                       []corev1.EnvVar                   `json:"env,omitempty"`
+	*ProbeSpec                `json:",inline,omitempty"`
 }
 
 // PersistencConfig defines options for data persistence
