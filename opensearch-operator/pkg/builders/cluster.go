@@ -563,7 +563,6 @@ func NewBootstrapPod(
 
 	image := helpers.ResolveImage(cr, nil)
 	masterRole := helpers.ResolveClusterManagerRole(cr.Spec.General.Version)
-	fmt.Println("Master roles: ", masterRole)
 	initContainerImage := helpers.ResolveInitContainersImage(cr)
 
 	probe := corev1.Probe{
@@ -834,7 +833,6 @@ func NewSecurityconfigUpdateJob(
 func AllMastersReady(ctx context.Context, k8sClient client.Client, cr *opsterv1.OpenSearchCluster) bool {
 	for _, nodePool := range cr.Spec.NodePools {
 		masterRole := helpers.ResolveClusterManagerRole(cr.Spec.General.Version)
-		fmt.Println("Master roles:", masterRole)
 		if helpers.ContainsString(nodePool.Roles, masterRole) {
 			sts := &appsv1.StatefulSet{}
 			if err := k8sClient.Get(ctx, types.NamespacedName{
