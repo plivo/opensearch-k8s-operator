@@ -1,0 +1,13 @@
+---
+parent: devops
+serviceName: opensearch-k8s-operator
+dockerFile: 'Dockerfile'
+build:
+  command: cd opensearch-operator && make build
+  ecrRegistries: plivo-devops
+  platform: "linux/amd64,linux/arm64"
+unitTests:
+  command: cd opensearch-operator && make test
+  platform: "linux/amd64,linux/arm64"
+lint:
+  command: cd opensearch-operator && make lint
