@@ -7,6 +7,7 @@ import (
 
 	opsterv1 "github.com/Opster/opensearch-k8s-operator/opensearch-operator/api/v1"
 	"github.com/hashicorp/go-version"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
 )
 
@@ -160,4 +161,21 @@ func BuildMainCommandOSD(installerBinary string, pluginsList []string, entrypoin
 
 	mainCommand = append(mainCommand, com)
 	return mainCommand
+}
+
+func ResolveProbes(probes, defaultProbes *opsterv1.ProbeSpec) (result opsterv1.ProbeSpec) {
+	if probes != nil {
+		result.LivenessProbe = checkOrAssignDefaultProbe(probes.LivenessProbe, defaultProbes.LivenessProbe)
+		result.StartupProbe = checkOrAssignDefaultProbe(probes.StartupProbe, defaultProbes.StartupProbe)
+		result.ReadinessProbe = checkOrAssignDefaultProbe(probes.ReadinessProbe, defaultProbes.ReadinessProbe)
+		return
+	}
+	return *defaultProbes
+}
+
+func checkOrAssignDefaultProbe(probe, defaultProbe *corev1.Probe) *corev1.Probe {
+	if probe != nil {
+		return probe
+	}
+	return defaultProbe
 }

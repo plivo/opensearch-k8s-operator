@@ -41,6 +41,12 @@ const (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type ProbeSpec struct {
+	LivenessProbe  *corev1.Probe `json:"livenessProbe,omitempty"`
+	StartupProbe   *corev1.Probe `json:"startUpProbe,omitempty"`
+	ReadinessProbe *corev1.Probe `json:"readinessProbe,omitempty"`
+}
+
 type GeneralConfig struct {
 	*ImageSpec `json:",inline,omitempty"`
 	//+kubebuilder:default=9200
@@ -102,6 +108,7 @@ type NodePool struct {
 	Env                       []corev1.EnvVar                   `json:"env,omitempty"`
 	PriorityClassName         string                            `json:"priorityClassName,omitempty"`
 	Pdb                       *PdbConfig                        `json:"pdb,omitempty"`
+	*ProbeSpec                `json:",inline,omitempty"`
 }
 
 // PersistencConfig defines options for data persistence
@@ -148,6 +155,7 @@ type BootstrapConfig struct {
 	Jvm          string                      `json:"jvm,omitempty"`
 	// Extra items to add to the opensearch.yml, defaults to General.AdditionalConfig
 	AdditionalConfig map[string]string `json:"additionalConfig,omitempty"`
+	*ProbeSpec       `json:",inline,omitempty"`
 }
 
 type DashboardsServiceSpec struct {
@@ -183,6 +191,7 @@ type DashboardsConfig struct {
 	PodSecurityContext *corev1.PodSecurityContext `json:"podSecurityContext,omitempty"`
 	// Set security context for the dashboards pods' container
 	SecurityContext *corev1.SecurityContext `json:"securityContext,omitempty"`
+	*ProbeSpec      `json:",inline,omitempty"`
 }
 
 type DashboardsTlsConfig struct {

@@ -120,6 +120,12 @@ func NewDashboardsDeploymentForCR(cr *opsterv1.OpenSearchCluster, volumes []core
 		},
 	}
 
+	dashboardProbes := helpers.ResolveProbes(cr.Spec.Dashboards.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &corev1.Probe{},
+	})
+
 	mainCommand := helpers.BuildMainCommandOSD("./bin/opensearch-dashboards-plugin", cr.Spec.Dashboards.PluginsList, "./opensearch-dashboards-docker-entrypoint.sh")
 
 	return &appsv1.Deployment{
@@ -155,8 +161,8 @@ func NewDashboardsDeploymentForCR(cr *opsterv1.OpenSearchCluster, volumes []core
 									ContainerPort: port,
 								},
 							},
-							StartupProbe:    &probe,
-							LivenessProbe:   &probe,
+							StartupProbe:    dashboardProbes.StartupProbe,
+							LivenessProbe:   dashboardProbes.LivenessProbe,
 							Env:             env,
 							VolumeMounts:    volumeMounts,
 							Command:         mainCommand,

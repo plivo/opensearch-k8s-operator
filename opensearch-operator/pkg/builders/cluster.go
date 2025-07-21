@@ -208,6 +208,12 @@ func NewSTSForNodePool(
 		},
 	}
 
+	nodeProbes := helpers.ResolveProbes(node.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &readinessProbe,
+	})
+
 	volumes = append(volumes, corev1.Volume{
 		Name: "admin-credentials",
 		VolumeSource: corev1.VolumeSource{
@@ -426,9 +432,9 @@ func NewSTSForNodePool(
 									ContainerPort: 9300,
 								},
 							},
-							StartupProbe:    &probe,
-							LivenessProbe:   &probe,
-							ReadinessProbe:  &readinessProbe,
+							StartupProbe:    nodeProbes.StartupProbe,
+							LivenessProbe:   nodeProbes.LivenessProbe,
+							ReadinessProbe:  nodeProbes.ReadinessProbe,
 							VolumeMounts:    volumeMounts,
 							SecurityContext: securityContext,
 						},
@@ -692,6 +698,12 @@ func NewBootstrapPod(
 		ProbeHandler:        corev1.ProbeHandler{TCPSocket: &corev1.TCPSocketAction{Port: intstr.IntOrString{IntVal: cr.Spec.General.HttpPort}}},
 	}
 
+	bootsrapProbes := helpers.ResolveProbes(cr.Spec.Bootstrap.ProbeSpec, &opsterv1.ProbeSpec{
+		LivenessProbe:  &probe,
+		StartupProbe:   &probe,
+		ReadinessProbe: &corev1.Probe{},
+	})
+
 	volumes = append(volumes, corev1.Volume{
 		Name: "data",
 		VolumeSource: corev1.VolumeSource{
@@ -801,8 +813,8 @@ func NewBootstrapPod(
 							ContainerPort: 9300,
 						},
 					},
-					StartupProbe:    &probe,
-					LivenessProbe:   &probe,
+					StartupProbe:    bootsrapProbes.StartupProbe,
+					LivenessProbe:   bootsrapProbes.LivenessProbe,
 					VolumeMounts:    volumeMounts,
 					SecurityContext: securityContext,
 				},
